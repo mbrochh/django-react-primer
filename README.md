@@ -59,7 +59,7 @@ All the above is essentially wrapped up in two repositories:
 * [django-reusable-app-template](https://github.com/bitmazk/django-reusable-app-template)
 * [django-development-fabfile](https://github.com/bitmazk/django-development-fabfile)
 
-### 1.2 Project Structure
+### Project Structure
 
 We try to stick to the DRY principle as best as possible, even across different
 projects. Therefore, we release almost everything as reusable Django apps on
@@ -82,7 +82,7 @@ A project usually only consists of the following major parts:
    overrides, images, third party .css and .js files, usually for jQuery
    plugins.
 
-### 1.3 Shortcomings
+### Shortcomings
 
 The above stack and project structure works extremely well for our small team.
 Everyone knows about this stack and structure very well and therefore everyone
@@ -92,7 +92,7 @@ We consider our products to be extremely well crafted and highly maintainable
 but as with most projects, there are some shortcomings that we have realized
 over time but never really cared to solve (because things work good enough).
 
-#### 1.3.1 Too Many Partials
+#### Too Many Partials
 
 We try to split our Django templates into the smallest possible units - we call
 them partials. This makes for great reusability, but it comes with a hefty
@@ -115,7 +115,7 @@ this but this requires very experienced developers who understand SQL very well
 and a lot of debugging and refactoring in order to identify bottlenecks and
 then pass along pre-fetched instances.
 
-#### 1.3.2 Too Many Requests
+#### Too Many Requests
 
 We try to use [django-compressor](https://github.com/django-compressor/django-compressor)
 but sometimes, reusable Django apps have form-media. Those assets cannot be
@@ -129,7 +129,7 @@ do this.
 As a result, our pages usually trigger a multitude of HTTP requests,
 potentially resulting in lower SEO rankings.
 
-#### 1.3.3 Too Much jQuery Spaghetti Code
+#### Too Much jQuery Spaghetti Code
 
 As projects grow, developers tend to keep adding third party libraries, some of
 them in the page `HEAD`, some of them before the closing `BODY` tag.
