@@ -53,7 +53,8 @@ Our stack usually consists of the following tools:
 * [Memcached](http://www.memcached.org)
 * [solr](http://lucene.apache.org/solr/)
 
-All the above is essentially wrapped up in two repositories:
+All the above is essentially wrapped up in the following boilerplate
+repositories:
 
 * [django-project-template](https://github.com/bitmazk/django-project-template)
 * [django-reusable-app-template](https://github.com/bitmazk/django-reusable-app-template)
