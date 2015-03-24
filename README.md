@@ -18,6 +18,7 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.1: Too Many Partials](#too-many-partials)
     - [1.3.2: Too Many Requests](#too-many-requests)
     - [1.3.3: Too Much jQuery Spaghetti Code](#too-much-jquery-spaghetti-code)
+    - [1.3.4: Unmaintainable CSS](#unmaintainable-css)
 
 ---
 
@@ -101,7 +102,7 @@ performance penalty. Once we reach a certain amount of includes in a template,
 requests become painfully slow.
 
 Django's template fragment caching can often alleviate this problem, but it ads
-complexity (and the possibility fdor subtle bugs) to the code and is not always
+complexity (and the possibility for subtle bugs) to the code and is not always
 an option.
 
 Django also makes it very easy to use templatetags and filters in the templates
@@ -114,18 +115,22 @@ Again, Django's `select_related` and `prefetch_related` and
 [django-cachalot](https://github.com/BertrandBordage/django-cachalot) can fix
 this but this requires very experienced developers who understand SQL very well
 and a lot of debugging and refactoring in order to identify bottlenecks and
-then pass along pre-fetched instances.
+then pass along pre-fetched instances. If one developer adds a `.filter()` to
+one of the pre-fetched querysets, all the hard work will be for nothing, the
+performance bottleneck will re-surface and it will be very difficult to find
+out where the problem happens.
 
 #### Too Many Requests
 
-We try to use [django-compressor](https://github.com/django-compressor/django-compressor)
-but sometimes, reusable Django apps have form-media. Those assets cannot be
-easily added to one big compressed CSS or JS file because they only appear
-on the views that use those forms. Therefore, calling `{{ form.media }}` in
-a sub-template seems to be an anti-pattern. The only way around this seems to
-be to dive into the third-party-app's code and see which assets are being used
-and then add them to the compress-blocks in base.html. We never bothered to
-do this.
+We try to use
+[django-compressor](https://github.com/django-compressor/django-compressor) but
+sometimes, reusable Django apps have [form assets](https://docs.djangoproject.com/en/1.7/topics/forms/media/).
+Those assets cannot be easily added to one big compressed CSS or JS file
+because they only appear on the views that use those forms. Therefore, calling
+`{{ form.media }}` in a sub-template seems to be an anti-pattern. The only way
+around this seems to be to dive into the third-party-app's code and see which
+assets are being used and then add them to the compress-blocks in `base.html`.
+We never bothered to do this.
 
 As a result, our pages usually trigger a multitude of HTTP requests,
 potentially resulting in lower SEO rankings.
@@ -141,8 +146,48 @@ all over the place, sometimes near the end of `base.html`, sometimes in a
 blocks deep down in partial templates (which is not compressed).
 
 Sometimes, JS snippets need to get some values from Django (i.e. URLs for AJAX
-calls), so we start adding global variables, again - all over the place.
+calls), so we start adding global variables, again they appear all over the
+place.
 
 Our UIs got much more robust when we stopped using IDs and class names and
 started using data-attributes for selecting DOM objects via `$(...)` but it
 remains very hard to understand maintain complex user interfaces.
+
+#### Unmaintainable CSS
+
+We have optimized the way we [manage Twitter Bootstrap](http://martinbrochhaus.com/bootstrap.html)
+in a unique way that allows us to keep Bootstrap up to date very easily (just
+run `git pull` on the git-submodule) and make use of Bootstrap `variables.less`
+and even override existing variables with our own values. This is leaps and
+bounds better than just downloading `bootstrap.min.js` and then add our own
+`styles.css` with project specific overrides, but it still results in one
+gigantic project specific `styles.less` which tries to style everything, from
+our own global site structure down to the tinyest element of some third party
+app.
+
+As a project grows and changes, developers usually don't dare to delete
+existing styles because they don't know if they are still in use somewhere, so
+we keep adding more and more styles all the time.
+
+On the other hand, if we use the full power of less, obey the DRY principle
+and put everything into variables and re-use those variables (and whole blocks
+of CSS), we end up not being sure if a certain change can be made safely
+because we don't know how many other elements would be affected by this (and
+where to see those elements on the page).
+
+A gigantic styleguide-view that contains every single element that is ever used
+in the project would be a solution for this, but especially when facing tight
+budgets or deadlines, developers tend to skip maintaining that styleguide.
+Maintenance of that file can also become very tricky because often a certain
+partial can look very different depending on the data given to it. This means
+you would have to include several versions of that partial into the
+styleguide-view.
+
+Sometimes, creating fixtures of data just to include a given partial can
+be so tricky that nobody bothers even to try it (i.e. when the partial needs
+an object with complex fields and attributes and then some stuff from the
+request and the session - good luck with that).
+
+We wrote a [load_context templatetag](https://github.com/bitmazk/django-libs/blob/master/docs/libs_tags.rst#load_context)
+to solve this problem, but as mentioned, creating correct fixtures remains
+tricky and keeping them up to date is even trickier.
