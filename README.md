@@ -19,6 +19,8 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.2: Too Many Requests](#too-many-requests)
     - [1.3.3: Too Much jQuery Spaghetti Code](#too-much-jquery-spaghetti-code)
     - [1.3.4: Unmaintainable CSS](#unmaintainable-css)
+- [Part 2: The Vision (TODO)](#the-vision)
+- [Part 3: The Toolchain (TODO)](#the-toolchain)
 
 ---
 
