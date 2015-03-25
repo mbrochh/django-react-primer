@@ -32,7 +32,31 @@ hurdle for me. After reading blog posts, tutorials and Github repositories
 for the past few weeks I feel that I need to write something down in order to
 make any progress.
 
-The structure of this repository is inspired by
+There are so many things that confuse me, I keep ending my days with my brain
+hurting because as a Python/Django developer, there are so many new things to
+learn that it feels just overwhelming:
+
+* What is ES6, babel, 6to5, transpilers, do I need this? Can I use this?
+* Grunt or Gulp?
+* Browserify or Webpack?
+* What is CommonJS, AMD, ES6 modules?
+* Which Flux implementation do I need? Why the fuck are there 20 different?
+* What are promises?
+* Which testing library is the best?
+* How to work with the npm ecosystem?
+
+And most importantly:
+
+How can I build generic reusable components? Every tutorial out there seems to
+assume that you write all your components from scratch for each project. I want
+to publish all my components on npm and re-use them in all my projects. How
+should I structure my npm modules and how should I provide static assets such
+as images and styles?
+
+These are the questions that I will hopefully find answers for in the next
+few weeks.
+
+By the way: The structure of this repository is inspired by
 [Mike Chau's react-primer-draft](https://github.com/mikechau/react-primer-draft)
 
 ## Status Quo
