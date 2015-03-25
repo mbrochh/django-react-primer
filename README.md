@@ -19,6 +19,7 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.2: Too Many Requests](#too-many-requests)
     - [1.3.3: Too Much jQuery Spaghetti Code](#too-much-jquery-spaghetti-code)
     - [1.3.4: Unmaintainable CSS](#unmaintainable-css)
+    - [1.3.5: No Realtime](#no-realtime)
 - [Part 2: The Vision (TODO)](#the-vision)
 - [Part 3: The Toolchain (TODO)](#the-toolchain)
 
@@ -217,3 +218,16 @@ request and the session - good luck with that).
 We wrote a [load_context templatetag](https://github.com/bitmazk/django-libs/blob/master/docs/libs_tags.rst#load_context)
 to solve this problem, but as mentioned, creating correct fixtures remains
 tricky and keeping them up to date is even trickier.
+
+#### No Realtime
+
+I know that it is possible to do fancy realtime stuff with Django. I have tried
+that a while ago and it was a weird and painful experience. I haven't tried
+[Swampdragon](http://swampdragon.net), yet but it looks promising and I keep
+hearing good things about it.
+
+But: [Node.js](https://nodejs.org) has taken the crown when it comes to
+anything related to [Socket.io](http://socket.io). So there is this tool that
+everyone already uses for realtime stuff and it seems to work extremely well
+for a lot of people out there - why should I even bother to wrestle with
+Tornado and gevent and greenlet and all these hacks?
