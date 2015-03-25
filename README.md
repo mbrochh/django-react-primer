@@ -157,13 +157,13 @@ remains very hard to understand maintain complex user interfaces.
 
 We have optimized the way we [manage Twitter Bootstrap](http://martinbrochhaus.com/bootstrap.html)
 in a unique way that allows us to keep Bootstrap up to date very easily (just
-run `git pull` on the git-submodule) and make use of Bootstrap `variables.less`
-and even override existing variables with our own values. This is leaps and
-bounds better than just downloading `bootstrap.min.js` and then add our own
-`styles.css` with project specific overrides, but it still results in one
-gigantic project specific `styles.less` which tries to style everything, from
-our own global site structure down to the tinyest element of some third party
-app.
+run `git pull` on the git-submodule) and make use of Bootstrap's
+`variables.less` and even override existing variables with our own values. This
+is leaps and bounds better than just downloading `bootstrap.min.js` and then
+add our own `styles.css` with project specific overrides, but it still results
+in one gigantic project specific `styles.less` which tries to style everything,
+from our own global site structure down to the tinyest element of some third
+party app.
 
 As a project grows and changes, developers usually don't dare to delete
 existing styles because they don't know if they are still in use somewhere, so
