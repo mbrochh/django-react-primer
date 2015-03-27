@@ -42,7 +42,7 @@ learn that it feels just overwhelming:
 * Browserify or Webpack?
 * What is CommonJS, AMD, ES6 modules?
 * Which Flux implementation do I need? Why the fuck are there 20 different?
-* What are promises?
+* What are promises, immutability, isomorphic apps?
 * Which testing library is the best?
 * How to work with the npm ecosystem?
 
