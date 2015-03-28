@@ -70,23 +70,20 @@ are usually handed to us as PSD files and we take care about the rest.
 
 Our stack usually consists of the following tools:
 
-* [nginx](http://nginx.org)
-* [uwsgi](http://uwsgi-docs.readthedocs.org/en/latest/)
-* [Django](https://www.djangoproject.com)
-* [django-cms](https://www.django-cms.org)
-* [django-debug-toolbar](http://django-debug-toolbar.readthedocs.org)
-* [Bootstrap](http://getbootstrap.com)
-* [less](http://lesscss.org)
-* [Fabric](http://www.fabfile.org)
-* [Memcached](http://www.memcached.org)
-* [solr](http://lucene.apache.org/solr/)
+[nginx](http://nginx.org), [uwsgi](http://uwsgi-docs.readthedocs.org/en/latest/),
+[Django](https://www.djangoproject.com), [django-cms](https://www.django-cms.org),
+[django-filer](http://django-filer.readthedocs.org/en/latest/),
+[django-debug-toolbar](http://django-debug-toolbar.readthedocs.org),
+[Bootstrap](http://getbootstrap.com), [less](http://lesscss.org),
+[Fabric](http://www.fabfile.org), [Memcached](http://www.memcached.org) and
+[solr](http://lucene.apache.org/solr/)
 
 All the above is essentially wrapped up in the following boilerplate
 repositories:
 
-* [django-project-template](https://github.com/bitmazk/django-project-template)
-* [django-reusable-app-template](https://github.com/bitmazk/django-reusable-app-template)
-* [django-development-fabfile](https://github.com/bitmazk/django-development-fabfile)
+[django-project-template](https://github.com/bitmazk/django-project-template),
+[django-reusable-app-template](https://github.com/bitmazk/django-reusable-app-template) and
+[django-development-fabfile](https://github.com/bitmazk/django-development-fabfile)
 
 ### Project Structure
 
@@ -98,15 +95,14 @@ A project usually only consists of the following major parts:
 
 1. A settings module which has a lot of reusable apps in the `INSTALLED_APPS`
    setting.
-2. A `urls.py` which is usually needed to hook up reusable apps.
+2. A `urls.py` which is hooks up all those reusable apps.
 3. A `requirements.txt` file which allows new developers to setup a local
-   development environment with a simple call of
-   `pip install -r requirements.txt`.
-4. A fabfile which allows developers to quickly setup a database, run the
+   development environment quickly.
+4. A fabfile which allows developers to setup a local database, run the
    Python unit-tests, measure code coverage, lint the code and run
    automated deployments.
-5. A templates folder which contains a `base.html` and allows to override the
-   templates of all reusable apps.
+5. A templates folder which contains a `base.html` and lots of overrides for
+   all the templates of all reusable apps.
 6. A static folder which contains the bootstrap styles, our own style
    overrides, images, third party .css and .js files, usually for jQuery
    plugins.
@@ -124,13 +120,19 @@ over time but never really cared to solve (because things work good enough).
 #### Too Many Partials
 
 We try to split our Django templates into the smallest possible units - we call
-them partials. This makes for great reusability, but it comes with a hefty
+them "partials". This makes for great reusability, but it comes with a hefty
 performance penalty. Once we reach a certain amount of includes in a template,
-requests become painfully slow.
+requests become painfully slow, even when keeping all (un-rendered) templates
+in cache. 
 
-Django's template fragment caching can often alleviate this problem, but it ads
-complexity (and the possibility for subtle bugs) to the code and is not always
-an option.
+Django's [template fragment caching](https://docs.djangoproject.com/en/1.7/topics/cache/#template-fragment-caching)
+can often alleviate this problem, but it ads complexity to the code and is not
+always an option. The added complexity means that developers must now remember
+which fragments are cached and must decide which actions should invalidate
+those caches. Since the concerns are separated far away from each other (cache
+block in the template vs. data manipulation in views, forms or models), it is
+virtually impossible to document and remember when caches need to be
+invalidated.
 
 Django also makes it very easy to use templatetags and filters in the templates
 and the temptation to have SQL queries in those tags/filters is almost
@@ -160,7 +162,16 @@ assets are being used and then add them to the compress-blocks in `base.html`.
 We never bothered to do this.
 
 As a result, our pages usually trigger a multitude of HTTP requests,
-potentially resulting in lower SEO rankings.
+potentially resulting in lower SEO rankings. [django-sekizai](http://django-sekizai.readthedocs.org/en/latest/)
+tries to address this problem but we don't like this solution at all. It does
+make sure that even deep down in the deepest partial template you will be
+adding assets to the one-and-only sekizai-blocks in your base template but this
+would mean that different views will genrate different compressed assets -
+which means that users would re-download large parts of the code just because
+some small additional script is needed on a certain view.
+
+If we compress files, they must know about *everything* that the whole project
+will ever need and include all of it.
 
 #### Too Much jQuery Spaghetti Code
 
