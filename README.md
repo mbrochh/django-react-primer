@@ -20,8 +20,11 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.3: Too Much jQuery Spaghetti Code](#too-much-jquery-spaghetti-code)
     - [1.3.4: Unmaintainable CSS](#unmaintainable-css)
     - [1.3.5: No Realtime](#no-realtime)
-- [Part 2: The Vision (TODO)](#the-vision)
-- [Part 3: The Toolchain (TODO)](#the-toolchain)
+- [Part 2: Possible Solution](#possible-solution)
+  - [2.1: New Stack](#new-stack)
+  - [2.2: New Project Structure](#new-project-structure)
+  - [2.3: Results](#results)
+- [Part 3: The Toolchain](#the-toolchain)
 
 ---
 
@@ -242,3 +245,96 @@ anything related to [Socket.io](http://socket.io). So there is this tool that
 everyone already uses for realtime stuff and it seems to work extremely well
 for a lot of people out there - why should I even bother to wrestle with
 Tornado and gevent and greenlet and all these hacks?
+
+
+## Possible Solution 
+
+Right now, this chapter is pretty much wishful thinking and some ideas that I
+have gotten during the last weeks while soaking all available online-knowledge
+about React.js. This chapter will probably change as I learn more about the
+possibilities and limitations of the new stack.
+
+### New Stack
+
+#### For New Projects
+
+Django will no longer serve any templates. It will only provide a JSON API via
+[django-rest-framework](http://www.django-rest-framework.org). Spike Brehm
+of airbnb has shared some nice ideas about
+[isomorphic javascript](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/).
+If you scroll to the second image of that post, you will get a good idea on
+how the new stack should work. Admins will still be able to use the awesome
+Django admin in order to maintain the database and we will still be able to
+use the awesome ORM (and it's caching solutions) to make queries that any
+developer can easily understand, but we will no longer use Django's views,
+forms and templating language. To be fair, the APIViews of
+django-rest-framework are similar to Django's views and forms, so we are really
+just giving up the templating engine.
+
+[Node.js](https://nodejs.org) will serve the whole bundled app to the client.
+This is the isomorphic part. We will have a `server.js` file which consists
+of an [express](http://expressjs.com) application that listens to the requests
+and responds with the matching rendered React component. This way, we can
+pre-render the requests on the server, so that search engines won't get an
+empty page. Once the client recieves the response, everything else happens on
+the client side (just calling API endpoints, re-rendering parts of the page).
+
+Nginx will serve the Django API at `example.com/api/v1/` (via uwsgi) and the
+Node.js server at `example.com`. Nginx will also serve static files (as usual).
+
+[react-router](https://github.com/rackt/react-router) will be used as a
+replacement of our beloved Django `urls.py` files. It defines which URL should
+map to which React component and has some cool ways to transition between
+"views", handle redirects and even pickup interrupted intents (i.e. when you
+try to access a restricted area and need to login first).
+
+[react-bootstrap](http://react-bootstrap.github.io/index.html) shall be used
+to replace vanilla bootstrap.
+
+[newforms-bootstrap](https://github.com/insin/newforms-bootstrap) could be used
+to render forms. It has an API that was inspired by Django, so the code for
+this will look very familiar to us. It will handle frontend-validation nicely.
+Unfortunately, we will still have to define the same validation in 
+django-rest-framework (always validate on the server), so there is a possible
+duplication of code. It might be a better idea to always let
+django-rest-framework do the validation and then just display the returned
+error messages (if any).
+
+[react-style](https://github.com/js-next/react-style) could be used to create
+styles right there in the files where the components are implemented. By also
+passing in styles via props, this would allow us to override the implemented
+default styles by passing in a big StyleSheet into the ContainerComponent.
+ReactNative uses something with the same syntax. I'm not sure if this would be
+compatible with newforms-bootstrap, though.
+
+[Webpack](http://webpack.github.io) will be used to bundle the app. It should
+result in one or more vendors files (i.e. for react.js itself) and one file
+that contains our own whole app. I'm not even sure, if it makes sense to
+separate the vendors files. If the total size of the bundle would be somewhere
+at 200kb, I guess everything could just be included into one big bundle.
+
+[Gulp](http://gulpjs.com) will be used to trigger certain build tasks (similar
+to our Django fabfile).
+
+[react-starter-kit](https://github.com/kriasoft/react-starter-kit) shall be
+used as a basis to start new projects, until we know enough to host our own
+version (this one is lacking some things, like react-router, and a server
+implementation for isomorphic apps). Overall it seems to be a great starting
+point and seems to be the only one that has BrowserSync in it's stack.
+
+#### For Existing Projects
+
+TODO
+
+### New Project Structure 
+
+TODO
+
+### Results
+
+TODO
+
+## The Toolchain
+
+TODO: This chapter should describe in detail how the [2. Possible
+Solution](#possible-solution) can be implemented.
