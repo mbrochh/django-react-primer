@@ -22,6 +22,8 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.5: No Realtime](#no-realtime)
 - [Part 2: Possible Solution](#possible-solution)
   - [2.1: New Stack](#new-stack)
+    - [2.1.1: For New Projects](#for-new-projects)
+    - [2.1.2: For Existing Projects](#for-existing-projects)
   - [2.2: New Project Structure](#new-project-structure)
   - [2.3: Results](#results)
 - [Part 3: The Toolchain](#the-toolchain)
@@ -305,7 +307,13 @@ styles right there in the files where the components are implemented. By also
 passing in styles via props, this would allow us to override the implemented
 default styles by passing in a big StyleSheet into the ContainerComponent.
 ReactNative uses something with the same syntax. I'm not sure if this would be
-compatible with newforms-bootstrap, though.
+compatible with newforms-bootstrap, though and I'm also not sure if this is
+a smart idea at all. It would probably be better to just override the
+bootstrap styles in the same old-fashioned way we always did but make sure that
+*every* style refers to a React component name.
+
+Maybe a better way to deal with styles might be
+[Smarter CSS builds with Webpack](http://bensmithett.com/smarter-css-builds-with-webpack/).
 
 [Webpack](http://webpack.github.io) will be used to bundle the app. It should
 result in one or more vendors files (i.e. for react.js itself) and one file
@@ -324,11 +332,28 @@ point and seems to be the only one that has BrowserSync in it's stack.
 
 #### For Existing Projects
 
-TODO
+React.js could be added as a dependency like jQuery and
+[django-react](https://github.com/markfinger/django-react) could be used to
+render components on the server and passing them into the template context.
+
+If the components live behind a login-wall and cannot reached by crawlers,
+django-react would even not be necessary at all, the user would simply see
+a short loading spinner before the component comes to life.
+
+Not sure, yet, if and how Webpack could be used to bundle all components that
+might be spread throughout different corners of the project. Ideally we would
+include React.js, our components bundle and then initialize whatever component
+we want to use in `<script>` tags in the templates where they are used (just
+like we do it today with jQuery plugins).
 
 ### New Project Structure 
 
-TODO
+Repositories for new projects should have two main folders: One for the Django
+API and one for the React frontend. I'm not sure if fabfiles, gulp configs and
+Webpack configs should also live in the project root or within the two main
+folders. Anyone working on the project would always have to start all servers
+and file system watchers, so having all the glue-scripts in the root folder
+is probably the way to go.
 
 ### Results
 
