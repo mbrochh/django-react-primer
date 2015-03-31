@@ -19,13 +19,16 @@ to figure out how to make it work for my existing Django toolchain.
     - [1.3.2: Too Many Requests](#too-many-requests)
     - [1.3.3: Too Much jQuery Spaghetti Code](#too-much-jquery-spaghetti-code)
     - [1.3.4: Unmaintainable CSS](#unmaintainable-css)
-    - [1.3.5: No Realtime](#no-realtime)
 - [Part 2: Possible Solution](#possible-solution)
   - [2.1: New Stack](#new-stack)
     - [2.1.1: For New Projects](#for-new-projects)
     - [2.1.2: For Existing Projects](#for-existing-projects)
   - [2.2: New Project Structure](#new-project-structure)
-  - [2.3: Results](#results)
+  - [2.3: Problems Solved](#problems-solved)
+    - [2.3.1: No More Partials](#no-more-partials)
+    - [2.3.2: Fewer Requests](#fewer-requests)
+    - [2.3.3: No More Spaghetti Code](#no-more-spaghetti-code)
+    - [2.3.4: Manageable CSS](#manageable-css)
 - [Part 3: The Toolchain](#the-toolchain)
 
 ---
@@ -235,20 +238,6 @@ We wrote a [load_context templatetag](https://github.com/bitmazk/django-libs/blo
 to solve this problem, but as mentioned, creating correct fixtures remains
 tricky and keeping them up to date is even trickier.
 
-#### No Realtime
-
-I know that it is possible to do fancy realtime stuff with Django. I have tried
-that a while ago and it was a weird and painful experience. I haven't tried
-[Swampdragon](http://swampdragon.net), yet but it looks promising and I keep
-hearing good things about it.
-
-But: [Node.js](https://nodejs.org) has taken the crown when it comes to
-anything related to [Socket.io](http://socket.io). So there is this tool that
-everyone already uses for realtime stuff and it seems to work extremely well
-for a lot of people out there - why should I even bother to wrestle with
-Tornado and gevent and greenlet and all these hacks?
-
-
 ## Possible Solution 
 
 Right now, this chapter is pretty much wishful thinking and some ideas that I
@@ -355,9 +344,43 @@ folders. Anyone working on the project would always have to start all servers
 and file system watchers, so having all the glue-scripts in the root folder
 is probably the way to go.
 
-### Results
+### Problems Solved 
 
-TODO
+Based on the ideas above, most of the identified shortcomings of the status quo
+should be addressed:
+
+#### No More Partials
+
+Things will still be broken down into smallest "partials" (now React
+components) but they will be bundled into one big `app.js`. All code would
+reside in the client's memory, so I would not expect any performance penalty
+for loading and including too many partials.
+
+#### Fewer Requests
+
+If webpack does a good job, we will end up with one big `app.js`, one
+`styles.css` and maybe a few vendor files (`react.min.js` and `jquery.min.js`),
+requests should be reduced to a bare minimum.
+
+#### No More Spaghetti Code
+
+React components will have it's HTML markup and all view-logic in the same
+file. It will be very easy to figure out, how any given markup came to be.
+All code will life in one bundled file, therefore we don't need initializations
+of various jQuery plugins all over the place.
+
+#### Manageable CSS
+
+As mentioned above, there are two possible solutions for this: One would be
+to use react-style and have the styles of each component defined right there
+in the same file. Another would be to include necessary styles via CommonJS
+in the component files. 
+
+Both solutions are very similar but right now I'm not sure which one is better
+or if any of the two are really suitable for projects of our scope. We might
+still end up writing CSS in the old-fashioned way but sticking to a much
+tighter naming convention, for example, each style must correspond to a React
+component. If there is no matching component, the style can probably deleted.
 
 ## The Toolchain
 
