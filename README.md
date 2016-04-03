@@ -6,7 +6,7 @@ A primer for building anything with [Django](https://www.djangoproject.com) and
 ## Status
 
 This is a work in progress. This repository is basically a stream of
-consciousness and a collection of links as I venture into React.js land and try
+consciousness and a collection of links as I venture into React.js-land and try
 to figure out how to make it work for my existing Django toolchain.
 
 ## Table of Contents
@@ -92,6 +92,7 @@ repositories:
 [django-project-template](https://github.com/bitmazk/django-project-template),
 [django-reusable-app-template](https://github.com/bitmazk/django-reusable-app-template) and
 [django-development-fabfile](https://github.com/bitmazk/django-development-fabfile)
+[ansible-ubuntu-django](https://github.com/bitmazk/ansible-ubuntu-django)
 
 ### Project Structure
 
@@ -131,7 +132,7 @@ We try to split our Django templates into the smallest possible units - we call
 them "partials". This makes for great reusability, but it comes with a hefty
 performance penalty. Once we reach a certain amount of includes in a template,
 requests become painfully slow, even when keeping all (un-rendered) templates
-in cache. 
+in cache.
 
 Django's [template fragment caching](https://docs.djangoproject.com/en/1.7/topics/cache/#template-fragment-caching)
 can often alleviate this problem, but it ads complexity to the code and is not
@@ -208,12 +209,12 @@ run `git pull` on the git-submodule) and make use of Bootstrap's
 is leaps and bounds better than just downloading `bootstrap.min.js` and then
 add our own `styles.css` with project specific overrides, but it still results
 in one gigantic project specific `styles.less` which tries to style everything,
-from our own global site structure down to the tinyest element of some third
+from our own global site structure down to the tiniest element of some third
 party app.
 
-As a project grows and changes, developers usually don't dare to delete
-existing styles because they don't know if they are still in use somewhere, so
-we keep adding more and more styles all the time.
+As a project grows , developers usually don't dare to delete existing styles
+because they don't know if they are still in use somewhere, so we keep adding
+more and more styles all the time.
 
 On the other hand, if we use the full power of less, obey the DRY principle
 and put everything into variables and re-use those variables (and whole blocks
@@ -221,13 +222,13 @@ of CSS), we end up not being sure if a certain change can be made safely
 because we don't know how many other elements would be affected by this (and
 where to see those elements on the page).
 
-A gigantic styleguide-view that contains every single element that is ever used
+A gigantic style-guide-view that contains every single element that is ever used
 in the project would be a solution for this, but especially when facing tight
-budgets or deadlines, developers tend to skip maintaining that styleguide.
+budgets or deadlines, developers tend to skip maintaining that style-guide.
 Maintenance of that file can also become very tricky because often a certain
 partial can look very different depending on the data given to it. This means
 you would have to include several versions of that partial into the
-styleguide-view.
+style-guide-view.
 
 Sometimes, creating fixtures of data just to include a given partial can
 be so tricky that nobody bothers even to try it (i.e. when the partial needs
@@ -238,7 +239,7 @@ We wrote a [load_context templatetag](https://github.com/bitmazk/django-libs/blo
 to solve this problem, but as mentioned, creating correct fixtures remains
 tricky and keeping them up to date is even trickier.
 
-## Possible Solution 
+## Possible Solution
 
 Right now, this chapter is pretty much wishful thinking and some ideas that I
 have gotten during the last weeks while soaking all available online-knowledge
@@ -285,13 +286,13 @@ to replace vanilla bootstrap.
 [newforms-bootstrap](https://github.com/insin/newforms-bootstrap) could be used
 to render forms. It has an API that was inspired by Django, so the code for
 this will look very familiar to us. It will handle frontend-validation nicely.
-Unfortunately, we will still have to define the same validation in 
+Unfortunately, we will still have to define the same validation in
 django-rest-framework (always validate on the server), so there is a possible
 duplication of code. It might be a better idea to always let
 django-rest-framework do the validation and then just display the returned
 error messages (if any).
 
-[react-style](https://github.com/js-next/react-style) could be used to create
+[Radium](https://github.com/FormidableLabs/radium) will be used to create
 styles right there in the files where the components are implemented. By also
 passing in styles via props, this would allow us to override the implemented
 default styles by passing in a big StyleSheet into the ContainerComponent.
@@ -301,17 +302,10 @@ a smart idea at all. It would probably be better to just override the
 bootstrap styles in the same old-fashioned way we always did but make sure that
 *every* style refers to a React component name.
 
-Maybe a better way to deal with styles might be
-[Smarter CSS builds with Webpack](http://bensmithett.com/smarter-css-builds-with-webpack/).
-
 [Webpack](http://webpack.github.io) will be used to bundle the app. It should
 result in one or more vendors files (i.e. for react.js itself) and one file
-that contains our own whole app. I'm not even sure, if it makes sense to
-separate the vendors files. If the total size of the bundle would be somewhere
-at 200kb, I guess everything could just be included into one big bundle.
-
-[Gulp](http://gulpjs.com) will be used to trigger certain build tasks (similar
-to our Django fabfile).
+that contains our own whole app. If the total size of the bundle would be
+somewhere at 200kb, I guess everything could just be included into one big bundle.
 
 [react-starter-kit](https://github.com/kriasoft/react-starter-kit) shall be
 used as a basis to start new projects, until we know enough to host our own
@@ -335,7 +329,7 @@ include React.js, our components bundle and then initialize whatever component
 we want to use in `<script>` tags in the templates where they are used (just
 like we do it today with jQuery plugins).
 
-### New Project Structure 
+### New Project Structure
 
 Repositories for new projects should have two main folders: One for the Django
 API and one for the React frontend. I'm not sure if fabfiles, gulp configs and
@@ -344,7 +338,7 @@ folders. Anyone working on the project would always have to start all servers
 and file system watchers, so having all the glue-scripts in the root folder
 is probably the way to go.
 
-### Problems Solved 
+### Problems Solved
 
 Based on the ideas above, most of the identified shortcomings of the status quo
 should be addressed:
@@ -374,7 +368,7 @@ of various jQuery plugins all over the place.
 As mentioned above, there are two possible solutions for this: One would be
 to use react-style and have the styles of each component defined right there
 in the same file. Another would be to include necessary styles via CommonJS
-in the component files. 
+in the component files.
 
 Both solutions are very similar but right now I'm not sure which one is better
 or if any of the two are really suitable for projects of our scope. We might
@@ -384,5 +378,26 @@ component. If there is no matching component, the style can probably deleted.
 
 ## The Toolchain
 
-TODO: This chapter should describe in detail how the [2. Possible
-Solution](#possible-solution) can be implemented.
+### Reusable Django REST Framework APP
+
+TODO: Describe how to wire up URLs for several third party REST apps
+
+### Static Files
+
+TODO: Add staticfiles folder so that frontend assets get fetched by
+collectstatic?
+
+### Isomorphic Setup
+
+TODO: Describe how react-router, server.js and app.js work together
+https://github.com/kriasoft/react-starter-kit
+https://github.com/jesstelford/react-isomorphic-boilerplate
+https://github.com/gpbl/isomorphic-react-template?files=1
+https://gist.github.com/mitchelkuijpers/11281981
+http://fluxible.io/api/bringing-flux-to-the-server.html
+https://github.com/yahoo/flux-examples/tree/master/react-router
+https://github.com/koba04/react-boilerplate/blob/master/app/routes.js
+https://github.com/sogko/gulp-recipes/blob/master/browser-sync-nodemon-expressjs/gulpfile.js
+https://gist.github.com/dstroot/22525ae6e26109d3fc9d
+
+### react-bootstrap
