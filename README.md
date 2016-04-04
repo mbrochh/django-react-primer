@@ -241,10 +241,18 @@ tricky and keeping them up to date is even trickier.
 
 ## Possible Solution
 
-Right now, this chapter is pretty much wishful thinking and some ideas that I
-have gotten during the last weeks while soaking all available online-knowledge
-about React.js. This chapter will probably change as I learn more about the
-possibilities and limitations of the new stack.
+I will try to re-work this chapter soon. I have recently created this
+[Django ReactJS Boilerplate](https://github.com/mbrochh/django-reactjs-boilerplate)
+which finally emerged as a way forward for me to use ReactJS in all my future
+Django projects. I still need to update that boilerplate with
+django-rest-framework and the usual common tasks like authentication, making
+GET, POST, PUT requests and hopefully server side rendering at the very end.
+
+Once that boilerplate is in place and I have made up my mind about my best
+practices that are worth sharing, I will put them into this chapter.
+
+Everything that follows is pretty old and outdated and was based on my past self
+that had no idea what was going on. Handle with care :)
 
 ### New Stack
 
@@ -306,12 +314,6 @@ bootstrap styles in the same old-fashioned way we always did but make sure that
 result in one or more vendors files (i.e. for react.js itself) and one file
 that contains our own whole app. If the total size of the bundle would be
 somewhere at 200kb, I guess everything could just be included into one big bundle.
-
-[react-starter-kit](https://github.com/kriasoft/react-starter-kit) shall be
-used as a basis to start new projects, until we know enough to host our own
-version (this one is lacking some things, like react-router, and a server
-implementation for isomorphic apps). Overall it seems to be a great starting
-point and seems to be the only one that has BrowserSync in it's stack.
 
 #### For Existing Projects
 
